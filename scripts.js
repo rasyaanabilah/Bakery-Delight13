@@ -13,7 +13,6 @@ function isLoggedIn() {
     return loginStatus === true || loginStatus === "true";
 }
 
-
 function setCookie(name, value, days = 7) {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))}; expires=${expires}; path=/`;
@@ -33,7 +32,6 @@ function getCookie(name) {
     }
     return null;
 }
-
 
 function formatRupiah(angka) {
     return new Intl.NumberFormat("id-ID", {
@@ -86,17 +84,15 @@ function displayProducts() {
                 <span class="value">${product.tanggal}</span>
             </div>
             <div class="stok-info" id="stock-${encodeURIComponent(product.title)}">
-            Stok: ${product.stock}
+                Stok: ${product.stock}
             </div>
-        <button class="add-to-cart" id="add-${encodeURIComponent(product.title)}"
-            onclick="addToCart('${encodeURIComponent(product.title)}', ${product.price}, '${product.thumbnail}')">
-            ${product.stock === 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
-        </button>
-    `;    
-
+            <button class="add-to-cart" id="add-${encodeURIComponent(product.title)}"
+                onclick="addToCart('${encodeURIComponent(product.title)}', ${product.price}, '${product.thumbnail}')">
+                ${product.stock === 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
+            </button>
+        </div>`;
         kontainerProduk.appendChild(productElement);
         updateProductButtonState(product.title, product.stock);
-
     });
 }
 
@@ -107,7 +103,6 @@ function updateProductButtonState(title, stock) {
     if (!addToCartBtn || !stockElement) return;
 
     stockElement.innerText = `Stok: ${stock}`;
-
     const isInCart = cart.some(item => item.title === title);
 
     if (stock === 0) {
@@ -127,7 +122,6 @@ function updateProductButtonState(title, stock) {
 
 function addToCart(title, price, thumbnail) {
     title = decodeURIComponent(title);
-
     const product = products.find(p => p.title === title);
     if (!product || product.stock <= 0) {
         alert("Stok tidak mencukupi.");
@@ -144,13 +138,6 @@ function addToCart(title, price, thumbnail) {
     product.stock -= 1;
     updateCartDisplay();
     updateProductButtonState(title, product.stock);
-
-    const button = document.getElementById(`add-${title}`);
-    if (button && product.stock > 0) {
-        button.innerText = 'Sudah ada di Keranjang';
-    }
-
-    // ✅ Simpan ke cookie setelah perubahan keranjang
     setCookie('cartData', cart);
 }
 
@@ -173,12 +160,11 @@ function updateCartDisplay() {
         cartItemElement.innerHTML = `
         <img src="${item.thumbnail}" alt="${item.title}">
         <div class="cart-item-details">
-        <h4>${item.title}</h4>
-        <p>Rp ${item.price.toLocaleString()} x ${item.quantity} = Rp ${(item.price * item.quantity).toLocaleString()}</p>
+            <h4>${item.title}</h4>
+            <p>${formatRupiah(item.price)} x ${item.quantity} = ${formatRupiah(item.price * item.quantity)}</p>
         </div>
         <button class="remove-btn" onclick="removeItem('${item.title}')">Hapus</button>
-    `;
-
+        `;
         cartItemsContainer.appendChild(cartItemElement);
     });
 
@@ -207,20 +193,18 @@ function removeItem(title) {
     product.stock += 1;
     updateCartDisplay();
     updateProductButtonState(title, product.stock);
-
-    // ✅ Simpan ke cookie setelah perubahan keranjang
     setCookie('cartData', cart);
 }
 
 function tampilkanStruk() {
     if (!isLoggedIn()) {
-        alert("Anda belum login. Silakan login terlebih dahulu untuk checkout.");
-        window.location.href = "login.html"; // arahkan ke login
+        alert("Anda belum login. Silakan login terlebih dahulu.");
+        window.location.href = "login.html";
         return;
     }
 
     if (cart.length < 3) {
-        alert("Minimal 3 item di keranjang untuk mencetak struk.");
+        alert("Minimal 3 item di keranjang untuk checkout.");
         return;
     }
 
@@ -259,45 +243,31 @@ function tampilkanStruk() {
 
     const today = new Date().toISOString().split("T")[0];
     const riwayat = JSON.parse(localStorage.getItem('riwayatStruk')) || [];
-    riwayat.push({
-        tanggal: today,
-        items: [...cart]
-    });
+    riwayat.push({ tanggal: today, items: [...cart] });
     localStorage.setItem('riwayatStruk', JSON.stringify(riwayat));
 }
 
 function tutupStruk() {
-    const strukBelanja = document.getElementById('struk-belanja');
-    const overlay = document.getElementById('struk-overlay');
-
-    if (strukBelanja) strukBelanja.style.display = 'none';
-    if (overlay) overlay.style.display = 'none';
-
-    kosongkanKeranjang(); // Sudah ada di JS kamu
+    document.getElementById('struk-belanja').style.display = 'none';
+    document.getElementById('struk-overlay').style.display = 'none';
+    kosongkanKeranjang();
 }
-
-
-function tampilkanModalLogin() {
-    const modal = document.getElementById("loginModal");
-    modal.style.display = "block";
-
-    const span = modal.querySelector(".close");
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    }
-}
-
 
 function kosongkanKeranjang() {
     cart = [];
     updateCartDisplay();
-    setCookie('cartData', []); // kosongkan cookie juga
+    setCookie('cartData', []);
+}
+
+function tampilkanModalLogin() {
+    const modal = document.getElementById("loginModal");
+    modal.style.display = "block";
+    modal.querySelector(".close").onclick = () => modal.style.display = "none";
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
 }
 
 function filterAndSort() {
@@ -354,23 +324,15 @@ function toggleCart() {
     cartContainer.style.display = (cartContainer.style.display === "block") ? "none" : "block";
 }
 
+// 🚀 Inisialisasi
 fetchProducts().then(() => {
     const savedCart = getCookie('cartData');
     if (savedCart && Array.isArray(savedCart)) {
         cart = savedCart;
-
-        // Kurangi stok produk berdasarkan isi cart
         cart.forEach(item => {
             const product = products.find(p => p.title === item.title);
-            if (product) {
-                product.stock -= item.quantity;
-            }
+            if (product) product.stock -= item.quantity;
         });
-
         updateCartDisplay();
     }
-
-    // ❌ HAPUS baris ini karena menyebabkan keranjang kosong setelah reload:
-    // setCookie('cartData', cart);
 });
-
