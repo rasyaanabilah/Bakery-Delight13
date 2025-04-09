@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .cart-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ffcc00;
+            color: black;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .cart-icon .badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            color: white;
+            font-size: 14px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cart-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            display: none; /* Awalnya tersembunyi */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .cart-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .cart-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+        }
+        .cart-item .item-info {
+            flex-grow: 1;
+            padding-left: 10px;
+        }
+        .cart-item .remove-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 8px;
+            background: #ffcc00;
+            color: black;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Ikon Keranjang -->
+<div class="cart-icon" onclick="toggleCart()">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="badge" id="cart-count">1</span> <!-- Notifikasi jumlah item -->
+</div>
+
+<!-- Keranjang Belanja -->
+<div class="cart-container" id="cart-container">
+    <div class="cart-header">Keranjang Belanja</div>
+
+    <div class="cart-item">
+        <img src="produk1.jpg" alt="Produk">
+        <div class="item-info">
+            <p>Original Bakery Delight</p>
+            <small>Rp 25.000</small>
+        </div>
+        <button class="remove-btn" onclick="removeItem()">Hapus</button>
+    </div>
+
+    <button class="checkout-btn">Checkout</button>
+</div>
+
+<script>
+    function toggleCart() {
+        var cart = document.getElementById("cart-container");
+        cart.style.display = (cart.style.display === "block") ? "none" : "block";
+    }
+
+    function removeItem() {
+        alert("Item dihapus dari keranjang!");
+        document.querySelector(".cart-item").remove();
+        document.getElementById("cart-count").innerText = "0";
+    }
+</script>
+
+</body>
+</html>

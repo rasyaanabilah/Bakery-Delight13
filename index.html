@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+        <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Delight</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        header {
+            background-color: #ffcc00;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        section {
+            padding: 20px;
+            background: white;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #selamat-datang {
+            background-color: #ffcc00;
+            color: #fff;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        #tentang, #produk, #kontak {
+            background-color: #ffffff;
+            border-left: 5px solid #ffcc00;
+            padding: 25px;
+        }
+        nav ul li a.login {
+            background-color: #ffcc00;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 2px solid white; /* Border dengan warna yang sesuai */
+        }
+
+        nav ul li a.register {
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 2px solid #ffcc00; /* Border dengan warna yang sesuai */
+        }
+
+        footer {
+            background-color: #ffcc00;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Hamburger menu button */
+.menu-toggle {
+    display: none; /* Sembunyikan di layar besar */
+    font-size: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #333;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+
+/* Styling untuk menu saat layar kecil */
+@media screen and (max-width: 768px) {
+    .menu-toggle {
+        display: block; /* Tampilkan di layar kecil */
+    }
+
+    nav ul {
+        display: none; /* Sembunyikan menu awalnya */
+        flex-direction: column;
+        width: 100%;
+        background-color: #ffcc00;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        padding: 10px 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    nav ul.show {
+        display: flex; /* Tampilkan menu saat ikon diklik */
+    }
+
+    nav ul li {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    nav ul li a {
+        display: block;
+        width: 90%;
+        margin: 5px auto;
+        padding: 10px;
+        background: white;
+        border-radius: 10px;
+        color: #333;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    nav ul li a:hover {
+        background-color: #ffe066;
+    }
+}
+.btn-profil {
+    background-color: #ffffff;
+    border: 2px solid #ffcc00;
+    padding: 10px 15px;
+    border-radius: 20px;
+    color: #333;
+    font-weight: bold;
+}
+.btn-profil:hover {
+    background-color: #ffe066;
+}
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </div>        
+        <div class="logo">Bakery Delight</div>
+        <nav>
+            <ul>
+              <li><a href="#tentang">Tentang</a></li>
+              <li><a href="#produk">Produk</a></li>
+              <li><a href="belanja.html">Belanja</a></li>
+              <li><a href="#kontak">Kontak</a></li>
+              <li id="nav-profil"><a href="profil.html" class="btn-profil">Profil Saya</a></li>
+              <li id="nav-login"><a href="login.html" class="login">Login</a></li>
+              <li id="nav-register"><a href="register.html" class="register">Register</a></li>
+            </ul>
+          </nav>
+          
+    </header>
+    <section id="selamat-datang">
+        <h2>Selamat Datang di Bakery Delight!</h2>
+        <p>Nikmati kelezatan camilan berkualitas yang dibuat dengan cinta dan bahan terbaik.</p>
+    </section>
+    <section id="tentang">
+        <h2>Tentang Bakery Delight</h2>
+        <p>Bakery Delight adalah camilan lezat yang menggabungkan kelezatan keju dengan renyahnya biskuit, cocok untuk segala suasana.</p>
+    </section>
+    <section id="kontak">
+        <h2>Hubungi Kami</h2>
+        <p>Jika kamu memiliki pertanyaan atau ingin memesan produk, silakan hubungi kami melalui:</p>
+        <ul>
+            <li>Email: bakerydelight@example.com</li>
+            <li>WhatsApp: 0812-3456-7890</li>
+            <li>Instagram: @bakerydelight.id</li>
+        </ul>
+    </section>
+    
+    <section id="produk">
+        <h2>Produk Kami</h2>
+        <p>Berbagai varian Bakery Delight yang siap memanjakan lidah Anda.</p>
+        <ul>
+            <li>Original Bakery Delight</li>
+            <li>Chocolate Bakery Delight</li>
+            <li>Strawberry Bakery Delight</li>
+        </ul>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                function toggleMenu() {
+                    document.querySelector("nav ul").classList.toggle("show");
+                }
+        
+                document.querySelector(".menu-toggle").addEventListener("click", toggleMenu);
+        
+                // Tutup menu saat salah satu item diklik
+                document.querySelectorAll("nav ul li a").forEach(item => {
+                    item.addEventListener("click", () => {
+                        document.querySelector("nav ul").classList.remove("show");
+                    });
+                });
+        
+                // Fungsi untuk ambil cookie
+                function getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
+        
+                const userId = getCookie('userId');
+                const isLoggedIn = localStorage.getItem("isLoggedIn");
+                const activeUser = localStorage.getItem("activeUser");
+
+                if (userId && isLoggedIn === "true" && activeUser) {
+                    // user masih login
+                    document.getElementById('nav-login').style.display = 'none';
+                    document.getElementById('nav-register').style.display = 'none';
+                    document.getElementById('nav-profil').style.display = 'inline-block';
+                } else {
+                    // user tidak login
+                    document.getElementById('nav-profil').style.display = 'none';
+                    document.getElementById('nav-login').style.display = 'inline-block';
+                    document.getElementById('nav-register').style.display = 'inline-block';
+
+                    // Bersihkan semua data sisa kalau ada
+                    localStorage.removeItem("isLoggedIn");
+                    localStorage.removeItem("activeUser");
+                    sessionStorage.clear();
+                }
+
+            });
+        </script>             
+        <footer>
+            &copy; 2025 Bakery Delight. Semua hak dilindungi undang-undang.
+        </footer>
+              
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Kasir - Bakery Delight</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+      background-color: #fff8f2;
+      color: #333;
+    }
+    h1 {
+      margin-bottom: 1.5rem;
+      color: #d2691e;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    th {
+      background-color: #f3e4d8;
+    }
+    td img {
+      width: 50px;
+      height: auto;
+      border-radius: 5px;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #d9534f;
+      color: white;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      margin-top: 1rem;
+      margin-right: 1rem;
+    }
+    button:hover {
+      background-color: #c9302c;
+    }
+    button.logout {
+      background-color: #555;
+    }
+    button.logout:hover {
+      background-color: #333;
+    }
+    input[type="date"] {
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    canvas {
+      max-width: 100%;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dashboard Kasir</h1>
+
+  <label for="filter-tanggal">Filter Tanggal:</label>
+  <input type="date" id="filter-tanggal" onchange="loadStruk()"/>
+
+  <div id="riwayat-container"></div>
+
+  <div style="margin-top: 2rem;">
+    <label for="chartType"><strong>Pilih Jenis Grafik:</strong></label>
+    <select id="chartType" onchange="tampilkanGrafikMingguan(strukTersimpan)">
+      <option value="bar">Bar</option>
+      <option value="line">Line</option>
+      <option value="pie">Pie</option>
+    </select>
+  </div>
+
+  <canvas id="grafikMingguan"></canvas>
+
+  <div style="margin-top: 2rem;">
+    <button onclick="hapusRiwayat()">Hapus Seluruh Riwayat</button>
+    <button onclick="exportToCSV()">Ekspor CSV</button>
+    <button onclick="exportToPDF()">Ekspor PDF</button>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    let strukTersimpan = [];
+
+    function loadStruk() {
+      const semuaStruk = JSON.parse(localStorage.getItem('riwayatStruk')) || [];
+      const filterTanggal = document.getElementById('filter-tanggal').value;
+      const container = document.getElementById('riwayat-container');
+      container.innerHTML = '';
+
+      const filtered = filterTanggal
+        ? semuaStruk.filter(trx => trx.date === filterTanggal)
+        : semuaStruk;
+
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>Tidak ada transaksi ditemukan.</p>";
+      } else {
+        filtered.forEach((trx, index) => {
+          const table = document.createElement('table');
+          table.innerHTML = `
+            <thead>
+              <tr>
+                <th colspan="6">Transaksi ${index + 1} (${trx.date})</th>
+              </tr>
+              <tr>
+                <th>No</th>
+                <th>Nama Produk</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Subtotal</th>
+                <th>Gambar</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          `;
+
+          const tbody = table.querySelector('tbody');
+          let total = 0;
+          trx.items.forEach((item, idx) => {
+            const subtotal = item.price * item.quantity;
+            total += subtotal;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${idx + 1}</td>
+              <td>${item.title}</td>
+              <td>Rp${item.price.toLocaleString()}</td>
+              <td>${item.quantity}</td>
+              <td>Rp${subtotal.toLocaleString()}</td>
+              <td><img src="${item.thumbnail}" alt="${item.title}"></td>
+            `;
+            tbody.appendChild(row);
+          });
+
+          const totalRow = document.createElement('tr');
+          totalRow.innerHTML = `
+            <td colspan="4"><strong>Total</strong></td>
+            <td colspan="2"><strong>Rp${total.toLocaleString()}</strong></td>
+          `;
+          tbody.appendChild(totalRow);
+          container.appendChild(table);
+        });
+      }
+
+      tampilkanTotalKeseluruhan(filtered, semuaStruk);
+      tampilkanGrafikMingguan(semuaStruk);
+    }
+
+    function tampilkanTotalKeseluruhan(filteredTransaksi, semuaTransaksi) {
+      const container = document.getElementById('riwayat-container');
+      let totalHari = 0, itemHari = 0;
+      let totalSemua = 0, itemSemua = 0;
+
+      filteredTransaksi.forEach(trx => {
+        trx.items.forEach(item => {
+          totalHari += item.price * item.quantity;
+          itemHari += item.quantity;
+        });
+      });
+
+      semuaTransaksi.forEach(trx => {
+        trx.items.forEach(item => {
+          totalSemua += item.price * item.quantity;
+          itemSemua += item.quantity;
+        });
+      });
+
+      const rekapDiv = document.createElement('div');
+      rekapDiv.innerHTML = `
+        <hr style="margin: 2rem 0;">
+        <h3>Rekap Total</h3>
+        <p><strong>Total Hari Ini:</strong> Rp${totalHari.toLocaleString()} (${itemHari} item)</p>
+        <p><strong>Total Keseluruhan:</strong> Rp${totalSemua.toLocaleString()} (${itemSemua} item)</p>
+      `;
+      container.appendChild(rekapDiv);
+    }
+
+    function tampilkanGrafikMingguan(struk) {
+      strukTersimpan = struk;
+      const ctx = document.getElementById('grafikMingguan').getContext('2d');
+      const chartType = document.getElementById('chartType').value || 'bar';
+
+      const tanggalMingguan = [];
+      const today = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const tgl = new Date(today);
+        tgl.setDate(today.getDate() - i);
+        const yyyy = tgl.getFullYear();
+        const mm = String(tgl.getMonth() + 1).padStart(2, '0');
+        const dd = String(tgl.getDate()).padStart(2, '0');
+        tanggalMingguan.push(`${yyyy}-${mm}-${dd}`);
+      }
+
+      const totalPerHari = tanggalMingguan.map(tanggal => {
+        const transaksi = struk.filter(trx => trx.date === tanggal);
+        return transaksi.reduce((sum, trx) => {
+          return sum + trx.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        }, 0);
+      });
+
+      if (window.grafikKasir) window.grafikKasir.destroy();
+
+      const data = {
+        labels: tanggalMingguan,
+        datasets: [{
+          label: 'Total Penjualan (Rp)',
+          data: totalPerHari,
+          backgroundColor: chartType === 'pie'
+            ? ['#ff9933', '#ffcc66', '#ff9966', '#ff9966', '#ffcc99', '#ffaa33', '#ffcc66']
+            : '#ff9933',
+          borderColor: '#d2691e',
+          tension: 0.3,
+          fill: chartType === 'line'
+        }]
+      };
+
+      window.grafikKasir = new Chart(ctx, {
+        type: chartType,
+        data,
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Grafik Penjualan 7 Hari Terakhir'
+            }
+          },
+          ...(chartType !== 'pie' && {
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: value => 'Rp' + value.toLocaleString()
+                }
+              }
+            }
+          })
+        }
+      });
+    }
+
+    function hapusRiwayat() {
+      if (confirm("Yakin ingin menghapus semua riwayat transaksi?")) {
+        localStorage.removeItem('riwayatStruk');
+        alert("Semua riwayat transaksi berhasil dihapus.");
+        location.reload();
+      }
+    }
+
+    function exportToCSV() {
+      const struk = JSON.parse(localStorage.getItem('riwayatStruk')) || [];
+      if (struk.length === 0) return alert("Tidak ada data untuk diekspor.");
+
+      let csv = "Tanggal,Produk,Harga,Jumlah,Subtotal\n";
+      struk.forEach(trx => {
+        trx.items.forEach(item => {
+          csv += `${trx.date},"${item.title}",${item.price},${item.quantity},${item.price * item.quantity}\n`;
+        });
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'riwayat_transaksi.csv';
+      link.click();
+    }
+
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const struk = JSON.parse(localStorage.getItem('riwayatStruk')) || [];
+      if (struk.length === 0) return alert("Tidak ada data untuk diekspor.");
+
+      const doc = new jsPDF();
+      let y = 10;
+      doc.setFontSize(12);
+      struk.forEach((trx, index) => {
+        doc.text(`Transaksi ${index + 1} (${trx.date})`, 10, y);
+        y += 6;
+        trx.items.forEach(item => {
+          doc.text(`${item.title} | Rp${item.price} x ${item.quantity} = Rp${item.price * item.quantity}`, 10, y);
+          y += 6;
+          if (y > 280) {
+            doc.addPage();
+            y = 10;
+          }
+        });
+        y += 4;
+      });
+      doc.save('riwayat_transaksi.pdf');
+    }
+
+    function logout() {
+  const userLogin = getCookie("userLogin") || "user"; // misalnya "true"
+  const userRole = getCookie("userRole") || "pengguna"; // misalnya "kasir"
+
+  const roleLabel = userRole.toLowerCase(); // "kasir"
+  const namaUser = userLogin.toLowerCase(); // "true"
+
+  tambahLogAktivitas(`(${roleLabel}) ${namaUser} melakukan logout dari sistem`);
+
+  ["userRole", "userId", "userLogin"].forEach(deleteCookie);
+  localStorage.removeItem("userLogin");
+  localStorage.removeItem("userId");
+  sessionStorage.clear();
+
+  alert("Berhasil logout.");
+  window.location.href = "login.html";
+}
+
+function getCookie(name) {
+  const cookies = document.cookie.split("; ");
+  for (let cookie of cookies) {
+    const [key, value] = cookie.split("=");
+    if (key === name) return decodeURIComponent(value);
+  }
+  return null;
+}
+
+function deleteCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+
+function tambahLogAktivitas(aksi) {
+  const waktu = new Date().toLocaleString("id-ID");
+  const logBaru = { waktu, aksi };
+  const log = JSON.parse(localStorage.getItem("logAktivitas")) || [];
+  log.unshift(logBaru);
+  localStorage.setItem("logAktivitas", JSON.stringify(log));
+}
+
+    loadStruk();
+  </script>
+</body>
+</html>

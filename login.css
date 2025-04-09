@@ -1,0 +1,43 @@
+.login-container {
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    text-align: center;
+    background-image: url("Coklat muda lucu estetik gambar makanan imut wallpaper desktop.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+body {
+    background-image: url('Coklat muda lucu estetik gambar makanan imut wallpaper desktop.jpg'); /* Ganti dengan path gambar */
+    background-size: cover; /* Agar gambar menyesuaikan ukuran layar */
+    background-position: center; /* Posisikan gambar di tengah */
+    background-repeat: no-repeat; /* Hindari pengulangan gambar */
+}
+
+
+.login-container input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background: #f39c12;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.login-container button:hover {
+    background: #e67e22;
+}
+

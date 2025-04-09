@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Manajemen Pengguna</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9ff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    ul {
+      margin-top: 20px;
+      padding-left: 0;
+    }
+
+    li {
+      list-style: none;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info {
+      flex-grow: 1;
+    }
+
+    .hapus-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .hapus-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .back-btn {
+      margin-top: 20px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .back-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Manajemen Pengguna</h2>
+    <ul id="userList">
+      <!-- Data pengguna akan ditampilkan di sini -->
+    </ul>
+    <a href="dashboard-admin.html" class="back-btn">⬅ Kembali ke Dashboard</a>
+  </div>
+
+  <script>
+    // Cek hak akses
+    const role = getCookie("userRole");
+    if (role !== "admin") {
+      alert("Akses ditolak. Halaman ini hanya untuk Admin.");
+      window.location.href = "login.html";
+    }
+
+    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    const userList = document.getElementById("userList");
+
+    // Tampilkan user atau notifikasi jika kosong
+    if (users.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "Tidak ada pengguna terdaftar.";
+      userList.appendChild(li);
+    } else {
+      users.forEach((user, index) => {
+        const li = document.createElement("li");
+
+        const userInfo = document.createElement("div");
+        userInfo.className = "user-info";
+        userInfo.textContent = `👤 ${user.nama} (${user.username}) - Role: ${user.role}`;
+
+        const hapusBtn = document.createElement("button");
+        hapusBtn.textContent = "Hapus";
+        hapusBtn.className = "hapus-btn";
+        hapusBtn.onclick = () => {
+          if (confirm(`Yakin ingin menghapus user '${user.username}'?`)) {
+            users.splice(index, 1);
+            localStorage.setItem("registeredUsers", JSON.stringify(users));
+            location.reload(); // refresh tampilan
+          }
+        };
+
+        li.appendChild(userInfo);
+        li.appendChild(hapusBtn);
+        userList.appendChild(li);
+      });
+    }
+
+    function getCookie(name) {
+      const cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) return decodeURIComponent(value);
+      }
+      return null;
+    }
+  </script>
+</body>
+</html>

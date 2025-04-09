@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil Saya</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+:root {
+  --bg-color: #fdf5f5;
+  --text-color: #333;
+  --card-color: #fff;
+  --button-color: #e67e22;
+  --button-hover: #d35400;
+  --input-bg: #fafafa;
+  --input-border: #ccc;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-image: url('Coklat muda lucu estetik gambar makanan imut wallpaper desktop.jpg'); /* Gambar background login */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.profile-container {
+  max-width: 480px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.8); /* Efek transparansi agar terlihat gambar background */
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 24px;
+  color: var(--text-color);
+}
+
+.profile-picture {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.img-wrapper {
+  position: relative;
+  width: 140px; /* Ukuran lingkaran */
+  height: 140px; /* Ukuran lingkaran */
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--button-color);
+}
+
+.img-wrapper .actions {
+  position: absolute;
+  bottom: 5px; /* Mengurangi jarak dari bawah untuk memindahkan ke atas */
+  left: 50%;
+  transform: translateX(-50%) translateY(-10%); /* Mengubah translateY agar lebih naik ke atas */
+  display: flex;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.img-wrapper:hover .actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.img-wrapper .btn {
+  width: 30px; /* Memperkecil ukuran tombol */
+  height: 30px; /* Memperkecil ukuran tombol */
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid white;
+}
+
+.img-wrapper .btn.camera {
+  background-color: #f39c12;
+}
+
+.img-wrapper .btn.delete {
+  background-color: #e74c3c;
+}
+
+.img-wrapper .btn i {
+  font-size: 14px; /* Memperkecil ukuran ikon */
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus {
+  border-color: var(--button-color);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--button-color);
+  transition: background-color 0.2s ease;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: var(--button-hover);
+}
+
+.btn-reset {
+  background-color: #c0392b;
+}
+
+.btn-reset:hover {
+  background-color: #a93226;
+}
+
+.btn-logout {
+  background-color: #7f8c8d;
+}
+
+.btn-logout:hover {
+  background-color: #636e72;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+@media (max-width: 500px) {
+  .profile-container {
+    padding: 20px;
+  }
+
+  input,
+  button {
+    font-size: 14px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h2>Profil Saya</h2>
+
+    <div class="profile-picture" onclick="document.getElementById('fotoProfil').click()">
+      <div class="img-wrapper">
+        <img id="previewFoto" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NSIgZmlsbD0iI2VlZSIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjQiIC8+PC9zdmc+" alt="Foto Profil">
+        <div class="actions">
+          <button class="btn camera" onclick="event.stopPropagation(); document.getElementById('fotoProfil').click();">
+            <i class="fas fa-camera"></i>
+          </button>
+          <button class="btn delete" onclick="hapusFoto(event)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="fotoProfil" accept="image/*" style="display: none;">
+
+    <div class="form-group">
+      <label for="username"><i class="fas fa-user"></i> Username</label>
+      <input type="text" id="username" placeholder="Masukkan nama Anda">
+    </div>
+
+    <div class="form-group">
+      <label for="email"><i class="fas fa-envelope"></i> Email</label>
+      <input type="email" id="email" placeholder="Masukkan email Anda">
+    </div>
+
+    <div class="form-group">
+      <label for="whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</label>
+      <input type="tel" id="whatsapp" placeholder="Nomor WhatsApp Anda">
+    </div>
+
+    <button onclick="simpanProfil()"><i class="fas fa-save"></i> Simpan Pembaruan</button>
+    <button class="btn-reset" onclick="resetProfil()"><i class="fas fa-trash-alt"></i> Reset Profil</button>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+
+    <a class="back-link" href="index.html">← Kembali ke Toko</a>
+  </div>
+
+  <script>
+window.onload = function() {
+  const userId = getCookie('userId'); // Ambil userId dari cookie
+  if (!userId) {
+    alert("Kamu belum login!");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const name = getCookie(`userName_${userId}`);
+  const email = getCookie(`userEmail_${userId}`);
+  const whatsapp = getCookie(`userWhatsApp_${userId}`);
+  const foto = localStorage.getItem(`userFoto_${userId}`);
+
+  if (name) document.getElementById('username').value = name;
+  if (email) document.getElementById('email').value = email;
+  if (whatsapp) document.getElementById('whatsapp').value = whatsapp;
+  if (foto) document.getElementById('previewFoto').src = foto;
+};
+
+function simpanProfil() {
+  const userId = getCookie("userId");
+  if (!userId) return alert("Kamu belum login!");
+
+  const name = document.getElementById('username').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const whatsapp = document.getElementById('whatsapp').value.trim();
+  const foto = document.getElementById('previewFoto').src;
+
+  if (name === '') return alert('Nama tidak boleh kosong!');
+  if (!validateEmail(email)) return alert('Format email tidak valid!');
+
+  setCookie(`userName_${userId}`, name);
+  setCookie(`userEmail_${userId}`, email);
+  setCookie(`userWhatsApp_${userId}`, whatsapp);
+  localStorage.setItem(`userFoto_${userId}`, foto);
+
+  alert('Profil berhasil diperbarui!');
+}
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function resetProfil() {
+  if (confirm('Yakin ingin mereset semua data profil?')) {
+    const userId = getCookie('userId');
+    if (userId) {
+      deleteCookie(`userName_${userId}`);
+      deleteCookie(`userEmail_${userId}`);
+      deleteCookie(`userWhatsApp_${userId}`);
+      localStorage.removeItem(`userFoto_${userId}`);
+    }
+
+    document.getElementById('username').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('whatsapp').value = '';
+    document.getElementById('previewFoto').src = 'data:image/svg+xml;base64,' +
+      btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><circle cx="60" cy="60" r="55" fill="#eee" stroke="#ccc" stroke-width="4" /></svg>`);
+
+    alert('Profil berhasil direset!');
+  }
+}
+
+function logout() {
+  if (confirm('Yakin ingin logout?')) {
+    const userId = getCookie('userId');
+    const name = getCookie(`userName_${userId}`) || 'Tidak dikenal';
+    const role = getCookie(`userRole_${userId}`) || 'Umum';
+
+    // Catat aktivitas logout
+    const logs = JSON.parse(localStorage.getItem('logAktivitas') || '[]');
+    logs.push({
+      userId: userId,
+      nama: name,
+      aksi: 'Logout',
+      role: role,
+      waktu: new Date().toLocaleString()
+    });
+    localStorage.setItem('logAktivitas', JSON.stringify(logs));
+
+    // Tambahkan delay agar data log tersimpan dulu
+    setTimeout(() => {
+      deleteCookie('userId');
+      deleteCookie('userLogin');
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("activeUser");
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }, 200); // Delay 200ms
+  }
+}
+
+
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+    }
+
+    function getCookie(name) {
+      const cookieArr = document.cookie.split('; ');
+      for (let cookie of cookieArr) {
+        const [key, val] = cookie.split('=');
+        if (key === name) return decodeURIComponent(val);
+      }
+      return null;
+    }
+
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+
+    document.getElementById('fotoProfil').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  const userId = getCookie('userId'); // Ambil userId dulu
+  if (file && userId) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const fotoBase64 = e.target.result;
+      document.getElementById('previewFoto').src = fotoBase64;
+      localStorage.setItem(`userFoto_${userId}`, fotoBase64); // Simpan ke localStorage
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+function hapusFoto(event) {
+  event.stopPropagation();
+  const userId = getCookie('userId');
+  const defaultBase64 = 'data:image/svg+xml;base64,' +
+    btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><circle cx="60" cy="60" r="55" fill="#eee" stroke="#ccc" stroke-width="4" /></svg>`);
+
+  document.getElementById('previewFoto').src = defaultBase64;
+  if (userId) localStorage.removeItem(`userFoto_${userId}`); // Hapus foto dari storage
+  document.getElementById('fotoProfil').value = '';
+}
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Log Aktivitas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fdfdfd;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .log-entry {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .btn {
+      text-align: center;
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 8px;
+      color: white;
+      flex: 1;
+      margin: 0 5px;
+    }
+
+    .back-btn {
+      background-color: #3498db;
+    }
+
+    .back-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+    }
+
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Log Aktivitas</h2>
+    <div id="logList"></div>
+
+    <div class="btn-group">
+      <a href="dashboard-admin.html" class="btn back-btn">⬅ Kembali ke Dashboard</a>
+      <button class="btn delete-btn" onclick="hapusRiwayat()">🗑 Hapus Semua Riwayat</button>
+    </div>
+  </div>
+
+  <script>
+    // Fungsi cookie
+    function getCookie(name) {
+      const cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) return decodeURIComponent(value);
+      }
+      return null;
+    }
+
+    // Cek login dan role
+    const role = getCookie("userRole");
+    const isLoggedIn = getCookie("userLogin");
+    if (!isLoggedIn || role !== "admin") {
+      alert("Akses ditolak.");
+      window.location.href = "login.html";
+    }
+
+    // Tampilkan log dari localStorage
+    function tampilkanLogAktivitas() {
+      const logList = JSON.parse(localStorage.getItem("logAktivitas")) || [];
+      const logContainer = document.getElementById("logList");
+      logContainer.innerHTML = "";
+
+      if (logList.length === 0) {
+        logContainer.innerHTML = "<p style='text-align:center; color:gray;'>Tidak ada aktivitas yang tercatat.</p>";
+        return;
+      }
+
+      logList.forEach(log => {
+        const div = document.createElement("div");
+        div.className = "log-entry";
+        div.textContent = `[${log.waktu}] (${log.role}) ${log.nama || 'User'} melakukan: ${log.aksi}`;
+        logContainer.appendChild(div);
+      });
+    }
+
+    // Fungsi hapus riwayat log
+    function hapusRiwayat() {
+      const konfirmasi = confirm("Yakin ingin menghapus semua riwayat aktivitas?");
+      if (konfirmasi) {
+        localStorage.removeItem("logAktivitas");
+        tampilkanLogAktivitas(); // Refresh daftar
+        alert("Semua riwayat berhasil dihapus.");
+      }
+    }
+
+    // Tampilkan log saat halaman dimuat
+    tampilkanLogAktivitas();
+  </script>
+</body>
+</html>

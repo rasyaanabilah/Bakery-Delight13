@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4ff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      background-color: #e8f0fe;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #3498db;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 16px;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+    }
+
+    nav a:hover {
+      background-color: #2980b9;
+    }
+
+    .section {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .logout-btn {
+      margin-top: 30px;
+      display: block;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dashboard Admin System</h1>
+
+    <nav>
+      <a href="manajemen-pengguna.html">Manajemen Pengguna</a>
+      <a href="pengaturan-sistem.html">Pengaturan Sistem</a>
+      <a href="log-aktivitas.html">Log Aktivitas</a>
+    </nav>
+
+    <div class="section">
+      <p>Selamat datang, <strong>Admin</strong>! Silakan pilih menu di atas untuk mulai mengelola sistem.</p>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const role = getCookie("userRole");
+    if (role !== "admin") {
+      alert("Akses ditolak. Halaman ini hanya untuk Admin System.");
+      window.location.href = "login.html";
+    }
+
+    function getNamaUser() {
+      return getCookie("userLogin") || "Admin";
+    }
+
+    function logout() {
+      // Tambahkan log aktivitas
+      tambahLogAktivitas("logout dari sistem.");
+
+      // Hapus cookie login
+      ["userRole", "userId", "userLogin"].forEach(deleteCookie);
+
+      // Bersihkan penyimpanan
+      localStorage.removeItem("userLogin");
+      localStorage.removeItem("userId");
+      sessionStorage.clear();
+
+      // Redirect ke login
+      window.location.href = "login.html";
+    }
+
+    function getCookie(name) {
+      const cookies = document.cookie.split("; ");
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split("=");
+        if (key === name) return decodeURIComponent(value);
+      }
+      return null;
+    }
+
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+
+    function tambahLogAktivitas(aksi) {
+      const waktu = new Date().toLocaleString("id-ID");
+      const role = getCookie("userRole") || "admin";
+      const nama = getCookie("userLogin") || "Admin";
+      const logBaru = {
+        waktu,
+        aksi: `(${role}) ${nama} melakukan: ${aksi}`
+      };
+      const log = JSON.parse(localStorage.getItem("logAktivitas")) || [];
+      log.unshift(logBaru); // Tambahkan ke awal array
+      localStorage.setItem("logAktivitas", JSON.stringify(log));
+    }
+  </script>
+</body>
+</html>

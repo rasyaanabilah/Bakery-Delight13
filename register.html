@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register User</title>
+        <link rel="stylesheet" href="toast.css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-image: url("Coklat muda lucu estetik gambar makanan imut wallpaper desktop.jpg");
+                background-size: cover; /* Agar gambar menyesuaikan ukuran layar */
+                background-position: center; /* Posisikan gambar di tengah */
+                background-repeat: no-repeat; /* Hindari pengulangan gambar */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                /* Biarkan halaman bertambah tinggi sesuai konten */
+                overflow-y: auto;
+                /* Aktifkan scrolling jika diperlukan */
+                margin: 0;
+            }
+
+            /* Background Video */
+            #backgroundVideo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+                z-index: -1;
+            }
+
+            .container {
+                width: 300px;
+                margin: 100px auto;
+                padding: 20px;
+                text-align: center;
+                background-image: url("Coklat muda lucu estetik gambar makanan imut wallpaper desktop.jpg");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+}
+
+            h2 {
+                text-align: center;
+                font-family: 'Times New Roman', Times, serif;
+                color: black;
+                font-size: 30px;
+            }
+
+            label {
+                display: block;
+                font-weight: bold;
+                margin-top: 10px;
+                text-align: left;
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                color: black;
+            }
+
+            input {
+                width: 100%;
+                padding: 8px;
+                margin-top: 5px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                display: block;
+                box-sizing: border-box;
+            }
+
+            .error {
+                color: red;
+                font-size: 0.9em;
+                display: block;
+                margin-top: 5px;
+            }
+
+            #registerBtn {
+                display: block;
+                width: 100%;
+                font-size: 20px;
+                padding: 12px;
+                margin-top: 20px;
+                background-color:#f39c12;
+                color: #ffffff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .password-container {
+                position: relative;
+            }
+
+            .toggle-password {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                font-size: 18px;
+                background: none;
+                border: none;
+                outline: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Register User</h2>
+            <form id="registerForm">
+              <input type="text" id="nama" required oninput="formatNama()" placeholder="Nama Lengkap">
+              <span class="error" id="errorNama"></span>
+              <input type="text" id="username" required oninput="validateUsername()" placeholder="Username">
+              <span class="error" id="errorUsername"></span>
+              <div class="password-container">
+                <input type="password" id="password" required oninput="validatePassword()" placeholder="Password">
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
+              </div>
+              <span class="error" id="errorPassword"></span>
+              <input type="text" id="whatsapp" required oninput="formatWhatsapp()" placeholder="WhatsApp">
+              <span class="error" id="errorWhatsapp"></span>
+              <button type="submit" id="registerBtn" disabled>Register</button>
+            </form>
+          </div>
+        
+          <script>
+            function formatNama() {
+              let nama = document.getElementById("nama");
+              nama.value = nama.value.replace(/[^a-zA-Z ]/g, "").replace(/\b\w/g, c => c.toUpperCase());
+            }
+        
+            function validateUsername() {
+              let username = document.getElementById("username");
+              username.value = username.value.toLowerCase().replace(/[^a-z0-9]/g, "");
+            }
+        
+            function validatePassword() {
+              let password = document.getElementById("password").value;
+              let errorPassword = document.getElementById("errorPassword");
+              let errors = [];
+        
+              if (!/[a-z]/.test(password)) errors.push("Minimal 1 huruf kecil.");
+              if (!/[A-Z]/.test(password)) errors.push("Minimal 1 huruf besar.");
+              if (!/\d/.test(password)) errors.push("Minimal 1 angka.");
+              if (!/[@$!%*?&]/.test(password)) errors.push("Minimal 1 karakter spesial (@$!%*?&).");
+              if (password.length < 6 || password.length > 20) errors.push("Panjang harus 6-20 karakter.");
+        
+              errorPassword.innerText = errors.length > 0 ? errors.join(" ") : "";
+            }
+        
+            function togglePassword() {
+              let passwordField = document.getElementById("password");
+              passwordField.type = passwordField.type === "password" ? "text" : "password";
+            }
+        
+            function formatWhatsapp() {
+              let wa = document.getElementById("whatsapp");
+              let errorWhatsapp = document.getElementById("errorWhatsapp");
+              wa.value = wa.value.replace(/\D/g, "");
+              if (!wa.value.startsWith("628")) wa.value = "628";
+              if (wa.value.length < 11 || wa.value.length > 14) {
+                errorWhatsapp.innerText = "Nomor harus 11-14 karakter dan diawali 628";
+              } else {
+                errorWhatsapp.innerText = "";
+              }
+            }
+        
+            // Validasi tombol register
+            document.addEventListener("DOMContentLoaded", function () {
+              let registerBtn = document.getElementById("registerBtn");
+        
+              function checkForm() {
+                let nama = document.getElementById("nama").value.trim();
+                let username = document.getElementById("username").value.trim();
+                let password = document.getElementById("password").value.trim();
+                let whatsapp = document.getElementById("whatsapp").value.trim();
+        
+                registerBtn.disabled = (nama === "" || username === "" || password === "" || whatsapp === "");
+              }
+        
+              document.querySelectorAll("#registerForm input").forEach(input => {
+                input.addEventListener("input", checkForm);
+              });
+            });
+        
+            document.getElementById("registerForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const nama = document.getElementById("nama").value.trim();
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const whatsapp = document.getElementById("whatsapp").value.trim();
+
+            const email = username + "@bakery.com"; // triknya pakai format email palsu
+
+            try {
+              const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+              const user = userCredential.user;
+
+              // Simpan nama pengguna ke profile Firebase
+              await user.updateProfile({ displayName: nama });
+
+              showToast("Registrasi berhasil! Selamat datang, " + nama, "success");
+              setTimeout(() => {
+                window.location.href = "login.html";
+              }, 1500);
+            } catch (error) {
+              showToast("Registrasi gagal: " + error.message, "error");
+            }
+          });
+
+          </script>
+          <script src="toast.js"></script>
+
+          <!-- Firebase SDK -->
+          <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+          <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
+
+          <script>
+            const firebaseConfig = {
+              apiKey: "AIzaSyBfWABOxBH36fYfhAmIcoZgZ-REpLPd7HY",
+              authDomain: "bakery-delight-397e0.firebaseapp.com",
+              projectId: "bakery-delight-397e0",
+              storageBucket: "bakery-delight-397e0.appspot.com",
+              messagingSenderId: "299651301824",
+              appId: "1:299651301824:web:4df96dc985dcf864bbc825",
+              measurementId: "G-20FQG1NVR3"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+          </script>
+
+    </body>
+</html>
