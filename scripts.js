@@ -1,4 +1,3 @@
-
 const apiUrl = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert';
 
 let products = [];
@@ -216,41 +215,31 @@ function removeItem(title) {
 function tampilkanStruk() {
     if (!isLoggedIn()) {
         alert("Anda belum login. Silakan login terlebih dahulu untuk checkout.");
-        window.location.href = "login.html";
+        window.location.href = "login.html"; // arahkan ke login
         return;
     }
 
-    const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (totalQuantity < 3) {
+    if (cart.length < 3) {
         alert("Minimal 3 item di keranjang untuk mencetak struk.");
         return;
     }
 
     alert("Transaksi berhasil!");
 
-    // Ambil data user
     const userId = getCookie('userId');
-    const userName = getCookie(`userName_${userId}`) || getCookie('userName') || "Tidak diketahui";
+    const userName = getCookie(`userName_${userId}`);
 
-    // Ambil elemen HTML struk
     const strukItemsContainer = document.getElementById('struk-items');
     const totalHargaEl = document.getElementById('struk-total-harga');
     const namaUserEl = document.getElementById('struk-nama-user');
 
-    // Validasi elemen struk
-    if (!strukItemsContainer || !totalHargaEl || !namaUserEl) {
-        alert("Elemen struk tidak ditemukan di halaman. Pastikan elemen #struk-items, #struk-total-harga, dan #struk-nama-user tersedia.");
-        return;
-    }
-
-    // Kosongkan isi lama
     strukItemsContainer.innerHTML = '';
     let total = 0;
 
-    // Tampilkan nama pelanggan
-    namaUserEl.innerHTML = `<strong>Nama Pelanggan:</strong> ${userName}`;
+    if (namaUserEl) {
+        namaUserEl.innerHTML = `<strong>Nama Pelanggan:</strong> ${userName || "Tidak diketahui"}`;
+    }
 
-    // Isi struk dengan isi keranjang
     cart.forEach(item => {
         const totalPerItem = item.price * item.quantity;
         total += totalPerItem;
@@ -264,17 +253,10 @@ function tampilkanStruk() {
         strukItemsContainer.appendChild(row);
     });
 
-    // Tampilkan total harga
     totalHargaEl.innerHTML = `<strong>Total:</strong> ${formatRupiah(total)}`;
+    document.getElementById('struk-belanja').style.display = 'block';
+    document.getElementById('struk-overlay').style.display = 'block';
 
-    // Tampilkan struk
-    const strukContainer = document.getElementById('struk-belanja');
-    const overlay = document.getElementById('struk-overlay');
-
-    if (strukContainer) strukContainer.style.display = 'block';
-    if (overlay) overlay.style.display = 'block';
-
-    // Simpan riwayat ke localStorage
     const today = new Date().toISOString().split("T")[0];
     const riwayat = JSON.parse(localStorage.getItem('riwayatStruk')) || [];
     riwayat.push({
@@ -283,18 +265,6 @@ function tampilkanStruk() {
     });
     localStorage.setItem('riwayatStruk', JSON.stringify(riwayat));
 }
-
-
-// Fungsi untuk menyimpan transaksi ke Firestore
-async function simpanTransaksiKeFirestore(dataTransaksi) {
-    try {
-      const docRef = await addDoc(collection(db, "transaksi"), dataTransaksi);
-      console.log("Transaksi berhasil disimpan dengan ID:", docRef.id);
-    } catch (e) {
-      console.error("Gagal menyimpan transaksi:", e);
-      tampilkanToast("Gagal menyimpan transaksi ke server!", "error");
-    }
-  }
 
 function tutupStruk() {
     const strukBelanja = document.getElementById('struk-belanja');
@@ -381,8 +351,8 @@ document.getElementById('prev').addEventListener('click', prevPage);
 
 function toggleCart() {
     const cartContainer = document.getElementById("cart-container");
-    cartContainer.classList.toggle("show-cart");
-  }  
+    cartContainer.style.display = (cartContainer.style.display === "block") ? "none" : "block";
+}
 
 fetchProducts().then(() => {
     const savedCart = getCookie('cartData');
