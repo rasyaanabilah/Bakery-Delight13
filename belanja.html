@@ -1,41 +1,43 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bakery Delight</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-  <link rel="stylesheet" href="toast.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Delight</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <h1>Bakery Delight</h1>
-    <ul>
-      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-    </ul>
-  </nav>
 
-  <!-- Ikon Keranjang -->
-  <div class="cart-icon" onclick="toggleCart()">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1>Bakery Delight</h1>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        </ul>
+    </nav>
+
+<!-- Ikon Keranjang -->
+<div class="cart-icon" onclick="toggleCart()">
     <i class="fas fa-shopping-cart"></i>
-    <span class="badge" id="cart-count">0</span>
-  </div>
+    <span class="badge" id="cart-count">0</span> <!-- Notifikasi jumlah item -->
+</div>
 
-  <!-- Keranjang Belanja -->
-  <div class="cart-container" id="cart-container">
+<!-- Keranjang Belanja -->
+<div class="cart-container" id="cart-container">
     <div class="cart-header">Keranjang Belanja</div>
-    <div id="cart-items"></div>
-    <button class="checkout-btn" onclick="tampilkanStruk()">Checkout</button>
-  </div>
+    
+    <div id="cart-items">
+</div>
+<button class="checkout-btn" onclick="tampilkanStruk()">Checkout</button>
+</div>
 
-  <!-- Struk Belanja -->
-  <div id="struk-overlay"></div>
-  <div id="struk-belanja">
+<!-- Struk Belanja -->
+<div id="struk-overlay"></div>
+<div id="struk-belanja">
     <h3>Bakery Delight</h3>
     <p><strong>Struk Belanja</strong></p>
-    <div id="struk-nama-user" style="margin-bottom: 10px;"></div>
     <table>
       <thead>
         <tr>
@@ -52,150 +54,50 @@
       <button onclick="window.print()">Cetak</button>
       <button onclick="tutupStruk()">Tutup</button>
     </div>
-  </div>
+  </div>  
 
-  <!-- Filter & Sorting -->
-  <div class="filter-container">
-    <input type="text" id="searchInput" placeholder="Cari produk..." />
-    <select id="sortSelect">
-      <option value="default">Urutkan</option>
-      <option value="harga-asc">Harga Terendah</option>
-      <option value="harga-desc">Harga Tertinggi</option>
-      <option value="bahan">Bahan</option>
-      <option value="tanggal">Tanggal Pembuatan</option>
-    </select>
-  </div>
-
-  <!-- Bagian Produk -->
-  <section class="produk">
-    <h3>Produk Kami</h3>
-    <div class="daftar-produk" id="kontainer-produk"></div>
-  </section>
-
-  <!-- Tombol Pagination -->
-  <div class="pagination">
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
-  </div>
-
-  <!-- Hero Section -->
-  <header class="hero">
-    <h2>Fresh Bread, Made with Love</h2>
-    <p>Nikmati berbagai pilihan roti lezat yang dibuat dengan bahan berkualitas.</p>
-  </header>
-
-  <!-- Modal Login -->
-  <div id="loginModal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3>Anda perlu login terlebih dahulu untuk melanjutkan checkout.</h3>
-      <button onclick="window.location.href = 'login.html';">Login Sekarang</button>
+    <!-- Filter & Sorting -->
+    <div class="filter-container">
+        <input type="text" id="searchInput" placeholder="Cari produk...">
+        <select id="sortSelect">
+            <option value="default">Urutkan</option>
+            <option value="harga-asc">Harga Terendah</option>
+            <option value="harga-desc">Harga Tertinggi</option>
+            <option value="bahan">Bahan</option>
+            <option value="tanggal">Tanggal Pembuatan</option>
+        </select>
     </div>
-  </div>
 
-  <!-- Script Eksternal -->
-  <script src="scripts.js"></script>
-  <script src="toast.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <!-- Bagian Produk -->
+    <section class="produk">
+        <h3 >Produk Kami</h3>
+        <div class="daftar-produk" id="kontainer-produk">
+            <!-- Produk dari API akan dimasukkan di sini -->
+        </div>
+    </section>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
+    <!-- Tombol Pagination -->
+    <div class="pagination">
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+    </div>
 
-  <!-- Konfigurasi Firebase dan Fungsi -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDv7fYEfS7l1sq1f_d9vKqa-HzKXbvxQsM",
-      authDomain: "bakery-delight.firebaseapp.com",
-      projectId: "bakery-delight",
-      storageBucket: "bakery-delight.firebasestorage.app",
-      messagingSenderId: "791018992357",
-      appId: "1:791018992357:web:c1fa9b81963b5578595a0c",
-      measurementId: "G-F9L5X6PV6F"
-    };
+    <!-- Bagian Hero -->
+    <header class="hero">
+        <h2>Fresh Bread, Made with Love</h2>
+        <p>Nikmati berbagai pilihan roti lezat yang dibuat dengan bahan berkualitas.</p>
+    </header>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    <!-- Modal untuk Peringatan Login -->
+<div id="loginModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Anda perlu login terlebih dahulu untuk melanjutkan checkout.</h3>
+        <button onclick="window.location.href = 'login.html';">Login Sekarang</button>
+    </div>
+</div>
 
-    function tampilkanStruk() {
-      const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-      const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const user = firebase.auth().currentUser;
 
-      if (!user) {
-        document.getElementById("loginModal").style.display = "block";
-        return;
-      }
-
-      const transaksi = {
-        userId: user.uid,
-        email: user.email,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        items: cartItems,
-        total: totalPrice
-      };
-
-      db.collection("transactions").add(transaksi)
-        .then(() => {
-          alert("Checkout berhasil! Transaksi disimpan.");
-          localStorage.removeItem("cart");
-          updateCartCount();
-          tampilkanStrukUI(cartItems, totalPrice, user.email);
-        })
-        .catch((error) => {
-          console.error("Gagal menyimpan transaksi:", error);
-          alert("Gagal menyimpan transaksi. Silakan coba lagi.");
-        });
-    }
-
-    function tampilkanStrukUI(cartItems, totalPrice, userEmail) {
-      document.getElementById("struk-nama-user").innerText = `Pembeli: ${userEmail}`;
-      const tbody = document.getElementById("struk-items");
-      tbody.innerHTML = "";
-
-      cartItems.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.quantity}</td>
-          <td>Rp${item.price.toLocaleString()}</td>
-          <td>Rp${(item.price * item.quantity).toLocaleString()}</td>
-        `;
-        tbody.appendChild(row);
-      });
-
-      document.getElementById("struk-total-harga").innerHTML = `<strong>Total: Rp${totalPrice.toLocaleString()}</strong>`;
-      document.getElementById("struk-overlay").style.display = "block";
-      document.getElementById("struk-belanja").style.display = "block";
-    }
-
-    function tutupStruk() {
-      document.getElementById("struk-overlay").style.display = "none";
-      document.getElementById("struk-belanja").style.display = "none";
-    }
-
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      document.getElementById("cart-count").textContent = totalItems;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // Tutup modal login
-      document.querySelector("#loginModal .close").onclick = () => {
-        document.getElementById("loginModal").style.display = "none";
-      };
-
-      updateCartCount();
-
-      // Cek login saat halaman dimuat
-      firebase.auth().onAuthStateChanged(user => {
-        if (!user) {
-          // User tidak login, modal akan tampil jika checkout dilakukan
-        }
-      });
-    });
-  </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
