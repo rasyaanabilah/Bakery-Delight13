@@ -188,53 +188,38 @@
               });
             });
         
-            document.getElementById("registerForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
+            document.getElementById("registerForm").addEventListener("submit", function(event) {
+              event.preventDefault();
 
-            const nama = document.getElementById("nama").value.trim();
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
-            const whatsapp = document.getElementById("whatsapp").value.trim();
+              let nama = document.getElementById("nama").value.trim();
+              let username = document.getElementById("username").value.trim();
+              let password = document.getElementById("password").value.trim();
+              let whatsapp = document.getElementById("whatsapp").value.trim();
 
-            const email = username + "@bakery.com"; // triknya pakai format email palsu
+              let users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
 
-            try {
-              const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-              const user = userCredential.user;
+              if (users.some(user => user.username === username)) {
+                showToast("Username sudah digunakan. Gunakan yang lain.", "error");
+                return;
+              }
 
-              // Simpan nama pengguna ke profile Firebase
-              await user.updateProfile({ displayName: nama });
+              users.push({
+                username,
+                password,
+                nama,
+                whatsapp,
+                role: "pelanggan"
+              });
 
-              showToast("Registrasi berhasil! Selamat datang, " + nama, "success");
+              localStorage.setItem("registeredUsers", JSON.stringify(users));
+
+              showToast("Registrasi berhasil! Silakan login.", "success");
               setTimeout(() => {
                 window.location.href = "login.html";
-              }, 1500);
-            } catch (error) {
-              showToast("Registrasi gagal: " + error.message, "error");
-            }
-          });
+              }, 1200);
+            });
 
           </script>
           <script src="toast.js"></script>
-
-          <!-- Firebase SDK -->
-          <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
-          <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
-
-          <script>
-            const firebaseConfig = {
-              apiKey: "AIzaSyBfWABOxBH36fYfhAmIcoZgZ-REpLPd7HY",
-              authDomain: "bakery-delight-397e0.firebaseapp.com",
-              projectId: "bakery-delight-397e0",
-              storageBucket: "bakery-delight-397e0.appspot.com",
-              messagingSenderId: "299651301824",
-              appId: "1:299651301824:web:4df96dc985dcf864bbc825",
-              measurementId: "G-20FQG1NVR3"
-            };
-
-            firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-          </script>
-
     </body>
 </html>
